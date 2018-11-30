@@ -1,0 +1,46 @@
+<html>
+   <head>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.1/redux.js"></script>
+   </head>
+   <body>
+       <button id="button">Click Time</button>
+       <button id="button2">Click Temp</button>
+       <h3 id="message"></h3>
+       <h3 id="message2"></h3>
+   <script>
+       let initialState = {
+           currentTime: "",
+           currentTemp: ""
+       }
+       const reducer = (state=initialState, action) => {
+           console.log(state, action);
+           let newState;
+           if (action.type === "GET_TEMP") {
+               let temp = Math.random();
+               newState = Object.assign({}, state);
+               newState.currentTemp = temp;
+           }
+           else {
+               let now = new Date().toString();
+               newState = Object.assign({}, state);
+               newState.currentTime = now;
+           }
+           return newState;
+       }
+       let { createStore } = Redux;
+       let store = createStore(reducer);
+       document.getElementById("button").onclick = () => {
+          store.dispatch({type: "GET_TIME"});
+       };
+       document.getElementById("button2").onclick = () => {
+           store.dispatch({type: "GET_TEMP"});
+       };
+       //non reactjs
+       store.subscribe(()  => {
+          let { currentTime, currentTemp } = store.getState();
+          document.getElementById("message").innerHTML = currentTime;
+          document.getElementById("message2").innerHTML = currentTemp;
+       });
+   </script>
+   </body>
+</html>

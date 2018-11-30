@@ -1,0 +1,105 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.1/redux.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div>Number <input id="input"/></div>
+<div>
+    <button id="history">History</button>
+    <button id="square">Square</button>
+    <button id="cube">Cube</button>
+    <button id="even">isEven</button>
+</div>
+<h3 id="message"></h3>
+<div id="table"></div>
+<table>
+
+</table>
+<script>
+    let initialState = {
+        history: [],
+        number: 0,
+        value: '',
+        action: ''
+    };
+    const reducer = (state=initialState, action) => {
+        let newState, num;
+        switch(action.type){
+              case "history":
+                  newState = Object.assign({}, state);
+                  newState.history.push({value: 0, action: "history"});
+                  break;
+              case "square" :
+                  num = document.getElementById("input").value;
+                  newState = Object.assign({}, state);
+                  newState.history.push({value: num, action: "Square"});
+                  newState.number = num;
+                  newState.action = 'square';
+                  newState.value =  num * num;
+                  break;
+              case "cube" :
+                  num = document.getElementById("input").value;
+                  newState = Object.assign({}, state);
+                  newState.history.push({value: num, action: "Cube"});
+                  newState.number = num;
+                  newState.action = 'cube';
+                  newState.value =  num * num * num;
+                  break;
+              case "even" :
+                  num = document.getElementById("input").value;
+                  newState = Object.assign({}, state);
+                  newState.history.push({value: num, action: "isEven"});
+                  newState.number = num;
+                  newState.action = 'isEven';
+                  newState.value =  num % 2 === 0 ? 'Is even': 'Is Odd';
+                  break;
+          }
+        return newState
+    };
+    let { createStore } = Redux;
+    let store = createStore(reducer);
+    document.getElementById("history").onclick = () => {
+        store.dispatch({type: "history"});
+    };
+    document.getElementById("square").onclick = () => {
+        store.dispatch({type: "square"});
+    };
+    document.getElementById("cube").onclick = () => {
+        store.dispatch({type: "cube"});
+    };
+    document.getElementById("even").onclick = () => {
+        store.dispatch({type: "even"});
+    };
+    store.subscribe(() => {
+        let {history, number, value, action} = store.getState();
+        let length = history.length, node;
+        switch(history[length-1].action) {
+            case "Square":
+                document.getElementById('message').innerHTML = "Square of " + number + " is " + value;
+                break;
+            case "Cube":
+                document.getElementById('message').innerHTML = "Cube of " + number + " is " + value;
+                break;
+            case "isEven":
+                document.getElementById('message').innerHTML = number + "  " + value;
+                break;
+            case "history":
+                document.getElementById('table').innerHTML = "";
+                document.getElementById('message').innerHTML = "";
+                for (let i=0; i<length; i++){
+                    if (history[i].action !== "history"){
+                        node = document.createElement("p");
+                        node.innerHTML = history[i].value + "" + history[i].action;
+                        document.getElementById('table').appendChild(node);
+                    }
+                }
+                break;
+        }
+    });
+
+</script>
+</body>
+</html>
